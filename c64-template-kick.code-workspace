@@ -9,7 +9,10 @@
 		"kickassembler.assemblerJar": "/Users/manlycode/git/manlycode/c64-template-kick/vendor/KickAssembler/KickAss.jar",
 		"kickassembler.completionParameterPlaceholders": true,
 		"kickassembler.outputDirectory": "build",
-		"kickassembler.debuggerRuntime": "/Users/manlycode/bin/C64Debugger.app/Contents/MacOS/C64Debugger",
-		"kickassembler.debuggerOptions": "-pass -autojmp"
+		"kickassembler.debuggerOptions": "-wait 2500 -autojmp",
+		"kickassembler.debuggerDumpFile": true,
+		"kickassembler.debuggerRuntime": "/Applications/C64Debugger.app/Contents/MacOS/C64Debugger",
+		"kickassembler.emulatorViceSymbols": true,
+		"kickassembler.emulatorRuntime": "/usr/local/bin/x64sc"
 	}
 }
