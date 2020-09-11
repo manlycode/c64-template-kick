@@ -6,13 +6,17 @@
     {
       "label": "Run Test (C64Debugger)",
       "dependsOrder": "sequence",
-      "dependsOn": ["Build Tests", "fix-test-labels"],
+      "dependsOn": [
+        "Build Tests",
+        "fix-test-labels"
+      ],
       "isBackground": true,
       "command": [
         "./bin/c64-debugger.sh"
       ],
       "args": [
-        "build/test-suite.prg"
+        "${workspaceFolder}/build/test-suite.prg",
+        "${workspaceFolder}/build/test-suite.sym"
       ],
       "group": {
         "kind": "test",
@@ -20,22 +24,26 @@
       },
       "problemMatcher": []
     },
-
     {
       "label": "Debug (C64Debugger)",
       "dependsOrder": "sequence",
-      "dependsOn": ["Build Main", "fix-labels"],
+      "dependsOn": [
+        "Build Main",
+        "fix-labels"
+      ],
       "isBackground": true,
       "command": [
         "./bin/c64-debugger.sh"
       ],
       "args": [
-        "${workspaceFolder}/build/main.prg"
+        "${workspaceFolder}/build/main.prg",
+        "${workspaceFolder}/build/main.sym"
       ],
-      "problemMatcher": []
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
     }
-    // For C64Debugger
-    // "-pass",
-    // "-symbols", sessionState.labelsFilename,
   ]
 }

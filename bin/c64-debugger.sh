@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 debuggerBin="/Applications/C64Debugger.app/Contents/MacOS/C64Debugger -pass"
-$debuggerBin -unpause
-$debuggerBin -wait 500 -snapshot clean-c64.snap
-$debuggerBin -wait 700 -clearsettings -autojmp -snapshot clean-c64.snap -prg $1
+$debuggerBin -unpause -clearsettings
+# $debuggerBin -wait 500 -snapshot clean-c64.snap 
+$debuggerBin -wait 1000 -clearsettings -autojmp -snapshot clean-c64.snap -prg $1 -symbols $2
+$debuggerBin -wait 2000 -unpause
