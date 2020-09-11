@@ -8,6 +8,7 @@ start:
     sta $d020
     sta $d021
     lda #$01
+.break
     sta $0286
     // Clear the screen and jump to draw routine
     jsr $e544

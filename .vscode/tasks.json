@@ -1,0 +1,41 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run Test (C64Debugger)",
+      "dependsOrder": "sequence",
+      "dependsOn": ["Build Tests", "fix-test-labels"],
+      "isBackground": true,
+      "command": [
+        "./bin/c64-debugger.sh"
+      ],
+      "args": [
+        "build/test-suite.prg"
+      ],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    },
+
+    {
+      "label": "Debug (C64Debugger)",
+      "dependsOrder": "sequence",
+      "dependsOn": ["Build Main", "fix-labels"],
+      "isBackground": true,
+      "command": [
+        "./bin/c64-debugger.sh"
+      ],
+      "args": [
+        "${workspaceFolder}/build/main.prg"
+      ],
+      "problemMatcher": []
+    }
+    // For C64Debugger
+    // "-pass",
+    // "-symbols", sessionState.labelsFilename,
+  ]
+}
