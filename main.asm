@@ -16,17 +16,22 @@ start:
     sei
     DisableTimers()
 
-    //jsr initJoystick
     vic_SelectBank(0)
     vic_SelectScreenMemory(1)   // $0400
     vic_SelectCharMemory(14)    // $3000
-    vic_SetMultiColorMode()
-    vic_set38ColumnMode()
 
-    // vic_clearScreen($0400)
+    // Set colors for map
+    lda #9
+    sta vic.cbg0
+    lda #0
+    sta vic.cbg1
+    lda #15
+    sta vic.cbg2
+
+
+    copyMap(map,MAP_WIDTH,MAP_HEIGHT,1,1,charset,2048,$0400)
     vic_CopyChars(charset.data,$3000,2048)
     vic_CopyColors(colors)
-    copyMap(map,MAP_WIDTH,MAP_HEIGHT,1,1,charset,2048,$0400)
 
     EnableTimers()
 
@@ -34,40 +39,14 @@ start:
     cli
     jmp *
 
-msg:
-    .text "              hello world!              "
-
-draw_text:
-    ldx #$00
-draw_loop:
-    lda msg,x
-    sta $05e0,x
-    inx
-    cpx #$28
-    bne draw_loop
-    rts
-
 irqTop:        
         // Begin Code ----------
+        vic_ClearModes()
+        vic_StandardCharacterModeOn()
+        vic_MultiColorModeOn()
         // End Code -----------
-        addRasterInterrupt irqMiddle:#150
-        copyMap(map,MAP_WIDTH,MAP_HEIGHT,1,1,charset,2048,$0400)
-
-        endISR
+        endISRFinal
         rts
-
-irqMiddle:
-    // Begin Code ----------
-    // End Code ------------
-    addRasterInterrupt irqBottom:#190
-    endISR
-    rts
-irqBottom:
-    // Begin Code ----------
-    // End Code ------------
-    addRasterInterrupt irqTop:#0
-    endISRFinal
-    rts
 
 .import source "assets/commando-charset.s"
 .import source "assets/commando-colors.s"

@@ -1,37 +1,37 @@
 #importonce
 
 .namespace vic {
-  .label xs0		  = $d000
-  .label ys0		  = $d001
-  .label xs1		  = $d002
-  .label ys1		  = $d003
-  .label xs2		  = $d004
-  .label ys2		  = $d005
-  .label xs3		  = $d006
-  .label ys3		  = $d007
-  .label xs4		  = $d008
-  .label ys4		  = $d009
-  .label xs5		  = $d00a
-  .label ys5		  = $d00b
-  .label xs6		  = $d00c
-  .label ys6		  = $d00d
-  .label xs7		  = $d00e
-  .label ys7		  = $d00f
-  .label msbXs	  = $d010
-  .label ctrlV    = $d011
+  .label xs0        = $d000
+  .label ys0        = $d001
+  .label xs1        = $d002
+  .label ys1        = $d003
+  .label xs2        = $d004
+  .label ys2        = $d005
+  .label xs3        = $d006
+  .label ys3        = $d007
+  .label xs4        = $d008
+  .label ys4        = $d009
+  .label xs5        = $d00a
+  .label ys5        = $d00b
+  .label xs6        = $d00c
+  .label ys6        = $d00d
+  .label xs7        = $d00e
+  .label ys7        = $d00f
+  .label msbXs      = $d010
+  .label ctrlV      = $d011 //VIC_CTRL1
   .label line	    = $d012	// raster line
-  .label xlp		  = $d013	// light pen coordinates
-  .label ylp		  = $d014
-  .label sactive  = $d015	// sprites: active
-  .label ctrlH    = $d016
-  .label sdy		  = $d017	// sprites: double height
-  .label ram		  = $d018	// RAM pointer
-  .label irq		  = $d019
+  .label xlp        = $d013	// light pen coordinates
+  .label ylp        = $d014
+  .label sactive    = $d015	// sprites: active
+  .label ctrlH      = $d016
+  .label sdy        = $d017	// sprites: double height
+  .label ram        = $d018	// RAM pointer
+  .label irq        = $d019
   .label irqmask	= $d01a
-  .label sback	  = $d01b	// sprites: background mode
-  .label smc		  = $d01c	// sprites: multi color mode
-  .label sdx		  = $d01d	// sprites: double width
-  .label ss_collided	= $d01e	// sprite-sprite collision detect
+  .label sback	    = $d01b	// sprites: background mode
+  .label smc		= $d01c	// sprites: multi color mode
+  .label sdx		= $d01d	// sprites: double width
+  .label ss_collided    = $d01e	// sprite-sprite collision detect
   .label sd_collided	= $d01f	// sprite-data collision detect
   // color registers
   .label cborder	= $d020	// border color
@@ -130,22 +130,53 @@
 //========================================================================
 // Multi-color Mode pg 115
 //========================================================================
-.macro vic_SetMultiColorMode() {
+.macro vic_ClearModes() {
+    clc
+    clv
+    lda vic.ctrlV
+    and #%10011111
+    sta vic.ctrlV
+    
+    lda vic.ctrlH
+    and #%11101111
+    sta vic.ctrlH
+}
+
+.macro vic_MultiColorModeOn() {
+  .print "vic.ctrlH="+vic.ctrlH
+.print "vic.ctrlH="+vic.ctrlH
+  
   lda vic.ctrlH
   ora #%00010000
-  sta vic.ctrlV
+  sta vic.ctrlH
 }
 
-.macro vic_SetStandardCharacterMode() {
+.macro vic_MultiColorModeOff() {
+  .print "vic.ctrlH="+vic.ctrlH
+  .print "vic.ctrlV="+vic.ctrlV
+  
+  lda vic.ctrlH
+  and #239
+  sta vic.ctrlH
+}
+
+
+.macro vic_StandardCharacterModeOn() {
   lda vic.ctrlH
   and #%11101111
+  sta vic.ctrlH
+}
+
+.macro vic_BitmapModeOn() {
+  lda vic.ctrlV
+  ora #32
   sta vic.ctrlV
 }
 
-.macro vic_SetHiRezBitmap() {
-  lda vic.ctrlH
-  ora #32
-  sta vic.ctrlH
+.macro vic_BitmapModeOff() {
+  lda vic.ctrlV
+  and #223
+  sta vic.ctrlV
 }
 
 .macro vic_set38ColumnMode() {
@@ -166,15 +197,15 @@
 // Color RAM
 //========================================================================
 .macro vic_CopyColors(source) {
-  ldx #0
+    ldx #0
 copyColorsLoop:
-  lda source,x
-  .for (var i=0; i<4; i++) {
-    sta vic.COLOR_RAM+(i*$100),x
-  }
+    lda source,x
+    .for (var i=0; i<4; i++) {
+        sta vic.COLOR_RAM+(i*$100),x
+    }
   
-  inx
-  bne copyColorsLoop
+    inx
+    bne copyColorsLoop
 }
 
 .macro vic_CopyChars(source, dest, SIZE) {

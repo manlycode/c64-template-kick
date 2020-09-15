@@ -30,13 +30,12 @@ vpYbuffer: .byte $00
 }
 
 .macro copyMap(Map, mapW, mapH, tileW, tileH, Charset, charCOUNT, Screen) {
-    lda vpX
-    sta mapIdx
-    lda #0
-    sta screenIdx
-
+        lda vpX
+        sta mapIdx
+        lda #0
+        sta screenIdx
 !:      ldy screenIdx
-    ldx mapIdx
+        ldx mapIdx
 
     .for (var i=0; i<(25 / tileH); i++) {
         lda Map+(mapW*tileH*i),x

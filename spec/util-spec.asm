@@ -28,7 +28,6 @@ sfspec: :init_spec()
                 :assert_equal #>src:ptr+1
 
 
-
     :finish_spec()
 
 .pc = * "Data"
