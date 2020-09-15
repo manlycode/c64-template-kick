@@ -1,6 +1,7 @@
 #importonce
 .import source "util.asm"
 .import source "zero-page.asm"
+.import source "vic.asm"
 
 //------------------------------------------------------------------
 // Constants
@@ -143,32 +144,50 @@ vpYbuffer: .byte $00
         .label vpDefPtr = zp.tmpPtr1
 
         ldy #0
+    !:
         lda (vpDefPtr),y
-        sta mapPtr
+        sta mapPtr,y
         iny
+        cpy #6
+        bne !-
 
-        lda (vpDefPtr),y
-        sta mapPtr+1
-        iny
-
-        lda (vpDefPtr),y
-        sta mapPtr+2
-        iny
-
-        lda (vpDefPtr),y
-        sta mapPtr+3
-        iny
-
-        lda (vpDefPtr),y
-        sta mapPtr+4
-        iny
-
-        lda (vpDefPtr),y
-        sta mapPtr+5
-        iny
-        
+        lda #$00
+        ldx #00
+    !:
+        sta bounds.top.left,x
+        inx
+        cpx #4
+        bne !-
         rts
 
+    shiftRight:
+        inc pos.x
+        // Update Bounds
+        rts
+
+    updateBounds:
+        clc
+        clv
+
+        lda mapPtr+1
+        sta bounds.top.left+1
+        sta bounds.top.right+1
+
+        lda mapPtr
+        adc pos.x
+        bcc !+
+        inc bounds.top.left+1   // Rollover was here
+        inc bounds.top.right+1
+!:      sta bounds.top.left
+
+        clc
+        clv
+        adc #39
+        bcc !+
+        inc bounds.top.right+1
+!:      sta bounds.top.right
+
+        rts
 
     mapPtr: .word $0000
     .namespace dim {
@@ -179,13 +198,14 @@ vpYbuffer: .byte $00
         x: .byte $00
         y: .byte $00    
     }
-    
-    
-    
-    
-
-    
-
-    .watch mapPtr,,"mapPtr"
-    .watch mapPtr+1,,"mapPtr"
+    .namespace bounds {
+        .namespace top {
+            left: .word $0000
+            right: .word $0000
+        }
+        .namespace bottom {
+            left: .word $0000
+            right: .word $0000
+        }
+    }
 }
