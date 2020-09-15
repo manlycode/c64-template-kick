@@ -10,12 +10,14 @@ BasicUpstart2(start)
 .import source "src/map.asm"
 .import source "src/cia.asm"
 .import source "src/vic.asm"
+.import source "src/joystick.asm"
 
 start:
     // Make screen black and text white
     sei
     DisableTimers()
 
+    jsr joystick.init
     vic_SelectBank(0)
     vic_SelectScreenMemory(1)   // $0400
     vic_SelectCharMemory(14)    // $3000
@@ -44,6 +46,7 @@ irqTop:
         vic_ClearModes()
         vic_StandardCharacterModeOn()
         vic_MultiColorModeOn()
+        jsr joystick.check
         // End Code -----------
         endISRFinal
         rts
