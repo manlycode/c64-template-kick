@@ -13,7 +13,6 @@ BasicUpstart2(start)
 .import source "src/joystick.asm"
 
 start:
-    // Make screen black and text white
     sei
     DisableTimers()
 
@@ -30,10 +29,11 @@ start:
     lda #15
     sta vic.cbg2
 
+    // copyMap(commando_map,MAP_WIDTH,MAP_HEIGHT,1,1,charset,2048,$0400)
+    // vic_CopyChars(charset.data,$3000,2048)
+    // vic_CopyColors(colors)
 
-    copyMap(map,MAP_WIDTH,MAP_HEIGHT,1,1,charset,2048,$0400)
-    vic_CopyChars(charset.data,$3000,2048)
-    vic_CopyColors(colors)
+    
 
     EnableTimers()
 
@@ -42,14 +42,14 @@ start:
     jmp *
 
 irqTop:        
-        // Begin Code ----------
-        vic_ClearModes()
-        vic_StandardCharacterModeOn()
-        vic_MultiColorModeOn()
-        jsr joystick.check
-        // End Code -----------
-        endISRFinal
-        rts
+    // Begin Code ----------
+    vic_ClearModes()
+    vic_StandardCharacterModeOn()
+    vic_MultiColorModeOn()
+    jsr joystick.check
+    // End Code -----------
+    endISRFinal
+    rts
 
 .import source "assets/commando-charset.s"
 .import source "assets/commando-colors.s"

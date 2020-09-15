@@ -1,7 +1,7 @@
 // Exported using VChar64 v0.2.4
 // Total bytes: 16000
 
-map:
+commando_map:
 .byte $cc,$cc,$cc,$cc,$cc,$cc,$cc,$cc,$cc,$cc,$cc,$cc,$cc,$cc,$cc,$d8	// 0
 .byte $d8,$d8,$d8,$d8,$d9,$d8,$d8,$d8,$d8,$d8,$cc,$cc,$cc,$cc,$cc,$cc	// 16
 .byte $cc,$cc,$cc,$cc,$cc,$cc,$cc,$cc,$cc,$cc,$cc,$cc,$cc,$cc,$cc,$cc	// 32

@@ -1,4 +1,7 @@
 #importonce
+.import source "util.asm"
+.import source "zero-page.asm"
+
 //------------------------------------------------------------------
 // Constants
 //------------------------------------------------------------------
@@ -106,3 +109,24 @@ vpYbuffer: .byte $00
 //------------------------------------------------------------------
 // Subroutines
 //------------------------------------------------------------------
+.namespace map {
+    copyRight:
+        lda #0
+        sta zp.tmp1
+
+        .for (var row = 0; row <= 25; row++) {
+        
+            .for (var i=39; i >= 0; i--) {
+                lda zp.tmp1
+                sta zp.tmp2
+
+                lda $0400+(40*row)+i
+                sta zp.tmp1
+                lda zp.tmp2
+                sta $0400+(40*row)+i
+            }
+        }
+
+        rts
+}
+

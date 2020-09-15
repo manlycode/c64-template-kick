@@ -2,6 +2,7 @@
 .importonce
 .import source "cia.asm"
 .import source "vic.asm"
+.import source "map.asm"
 
 .namespace joystick {
     init:
@@ -21,12 +22,12 @@
             jsr doRight
             jmp saveJoyState
 
-    !:       cmp #$fb                // Left
+    !:      cmp #$fb                // Left
             bne !+
             jsr doLeft
             jmp saveJoyState
 
-    !:       cmp #$ff                //released
+    !:      cmp #$ff                //released
             ldx #3
             stx vic.cborder
 
@@ -38,15 +39,17 @@
     doRight:
             ldx #1
             stx vic.cborder
-            jsr decScroll
-            jsr updateScroll
+
+            // jsr map.copyRight
+
             rts
 
     doLeft:
             ldx #2
             stx vic.cborder
-            jsr incScroll
-            jsr updateScroll
+
+            jsr map.copyRight
+
             rts
 
     joy_currentState:
