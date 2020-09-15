@@ -6,8 +6,8 @@
 //------------------------------------------------------------------
 // Constants
 //------------------------------------------------------------------
-.label SCREEN_W = 40
-.label SCREEN_H = 25
+.const SCREEN_H = 25
+.const SCREEN_W = 40
 //------------------------------------------------------------------
 // Variables
 //------------------------------------------------------------------
@@ -133,6 +133,8 @@ vpYbuffer: .byte $00
 
 
 .namespace viewPort {
+    
+
     .macro @ViewPortDef(mapPtr, x, y, width, height) {
         .word mapPtr
         .byte x,y
@@ -166,12 +168,19 @@ vpYbuffer: .byte $00
         rts
 
     updateBounds:
+        .label rowRollover = zp.tmp1
+        .label tmpA = zp.tmp2
+        lda #0
+        sta rowRollover
+
         clc
         clv
 
         lda mapPtr+1
         sta bounds.top.left+1
         sta bounds.top.right+1
+        sta bounds.bottom.left+1
+        sta bounds.bottom.right+1
 
         lda mapPtr
         adc pos.x
@@ -182,13 +191,53 @@ vpYbuffer: .byte $00
 
         clc
         clv
-        adc #39
+        adc #SCREEN_W-1
         bcc !+
         inc bounds.top.right+1
 !:      sta bounds.top.right
 
-        rts
+        ldx #SCREEN_H-1
+        
+rowLoop:
+        clc
+        clv
+        adc dim.width
+        bcc !+
+        inc rowRollover
+!:      dex
+        bne rowLoop
 
+        sta bounds.bottom.right
+        tay
+        clc
+        clv
+        lda bounds.bottom.right+1
+        adc rowRollover
+        sta bounds.bottom.right+1
+        tya
+
+        clc
+        clv
+        sbc #39
+        sta bounds.bottom.left
+        lda bounds.bottom.left+1
+        adc rowRollover
+        sta bounds.bottom.left+1
+//         clc
+//         clv
+//         adc #SCREEN_W-1
+//         bcc !+
+//         inc rowRollover        
+// !:      sta bounds.bottom.right
+//         clc
+//         clv
+//         lda bounds.bottom.right+1
+//         adc rowRollover
+//         sta bounds.bottom.right+1
+
+        rts
+.watch bounds.bottom.right
+.watch bounds.bottom.right+1
     mapPtr: .word $0000
     .namespace dim {
         width:  .byte $00        // Width in tiles

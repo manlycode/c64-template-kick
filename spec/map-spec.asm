@@ -17,14 +17,14 @@ sfspec: :init_spec()
 
         :it("sets the position")
             jsr initSetup
-            :assert_equal viewPort.pos.x:#35
-            :assert_equal viewPort.pos.y:#2
+            :assert_equal viewPort.pos.x:#0
+            :assert_equal viewPort.pos.y:#0
 
     :describe("shiftRight")
         :it("sets the x position")
             jsr viewPort.shiftRight
-            :assert_equal viewPort.pos.x:#36
-            :assert_equal viewPort.pos.y:#2
+            :assert_equal viewPort.pos.x:#1
+            :assert_equal viewPort.pos.y:#0
 
     :describe("updateTopBounds")
         :describe("when shifting doesn't cross $ff")
@@ -32,24 +32,26 @@ sfspec: :init_spec()
                 jsr initSetup
                 jsr viewPort.updateBounds
 
-                :assert_equal16 #$0400+35:viewPort.bounds.top.left
-                :assert_equal16 #$0400+35+39:viewPort.bounds.top.right
+                :assert_equal16 #$0400:viewPort.bounds.top.left
+                :assert_equal16 #$0400+$27:viewPort.bounds.top.right
+                :assert_equal16 #$0400+$27+(24*80):viewPort.bounds.bottom.right //0ba7
+                :assert_equal16 #$0b80:viewPort.bounds.bottom.left //0b80
                 
-        :describe("when shifting crosses $ff")
-            :it("bumps the msb")
-                jsr initSetupRollover
-                jsr viewPort.updateBounds
+        // :describe("when shifting crosses $ff")
+        //     :it("bumps the msb")
+        //         jsr initSetupRollover
+        //         jsr viewPort.updateBounds
 
-                :assert_equal16 #$04ff+35:viewPort.bounds.top.left
-                :assert_equal16 #$04ff+35+39:viewPort.bounds.top.right
+        //         :assert_equal16 #$04ff+35:viewPort.bounds.top.left
+        //         :assert_equal16 #$04ff+35+39:viewPort.bounds.top.right
 
-        :describe("when it barely rolls over")
-            :it("bumps the msb")
-                jsr initSetupAlmostRollover
-                jsr viewPort.updateBounds
+        // :describe("when it barely rolls over")
+        //     :it("bumps the msb")
+        //         jsr initSetupAlmostRollover
+        //         jsr viewPort.updateBounds
 
-                :assert_equal16 #$04d9:viewPort.bounds.top.left
-                :assert_equal16 #$0500:viewPort.bounds.top.right
+        //         :assert_equal16 #$04d9:viewPort.bounds.top.left
+        //         :assert_equal16 #$0500:viewPort.bounds.top.right
     :finish_spec()
 
 initSetup:
@@ -70,7 +72,7 @@ initSetupAlmostRollover:
 .pc = * "Data"
 // Data labels go here
 vpDef:
-    @ViewPortDef($0400,80,25,35,2)
+    @ViewPortDef($0400,80,25,0,0)
 vpDefRollover:
     @ViewPortDef($04ff,80,25,35,2)
 vpDefAmostRollover:
