@@ -178,15 +178,16 @@ copyColorsLoop:
 }
 
 .macro vic_CopyChars(source, dest, SIZE) {
-    ldx #0
+    .var size = SIZE
 
+    ldx #0
 !:  lda source,x
     sta dest,x
     
-    // .for (var i=0; i<#(SIZE/256); i++) {
-    //     lda source+(i*$100),x
-    //     sta dest+(i*$100),x
-    // }
+    .for (var i=0; i<(size/256); i++) {
+        lda source+(i*$100),x
+        sta dest+(i*$100),x
+    }
 
     clc
     clv

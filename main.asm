@@ -1,18 +1,7 @@
-.segmentdef ZeroPage [start=$0002]
+.segmentdef Data [startAfter="Default", align=$100]
 
-.segmentdef Char [start=$3000]
-.segmentdef Map [start=$6000]
 
 BasicUpstart2(start)
-
-* = $3000
-.segment Char "Characters"
-.import source "assets/commando-charset.s"    
-* = $6000
-.segment Map "Map"
-.import source "assets/commando-map.s"
-
-.segment Default "Code"
 
 // Entry point
 * = $4000
@@ -34,20 +23,17 @@ start:
     vic_SetMultiColorMode()
     vic_set38ColumnMode()
 
-    vic_clearScreen($0400)
-
+    // vic_clearScreen($0400)
+    vic_CopyChars(charset.data,$3000,2048)
+    vic_CopyColors(colors)
+    copyMap(map,MAP_WIDTH,MAP_HEIGHT,1,1,charset,2048,$0400)
 
     EnableTimers()
+
     addRasterInterrupt irqTop:#0
-    cli        
+    cli
     jmp *
 
-renderMap1:
-        copyMap(map, MAP_WIDTH, MAP_HEIGHT, 1, 1, charset, CHARSET_COUNT, $0400)
-        rts
-renderBuffer1:
-        copyBuffer(map, MAP_WIDTH, MAP_HEIGHT, 1, 1, charset, CHARSET_COUNT, $2000)
-        rts
 msg:
     .text "              hello world!              "
 
@@ -63,41 +49,26 @@ draw_loop:
 
 irqTop:        
         // Begin Code ----------
-        jsr draw_text
-        // jsr checkJoystick
-        // End Code ----------
-        lda #3
-        sta vic.cborder
+        // End Code -----------
         addRasterInterrupt irqMiddle:#150
+        copyMap(map,MAP_WIDTH,MAP_HEIGHT,1,1,charset,2048,$0400)
 
         endISR
         rts
 
 irqMiddle:
-       // Begin Code ----------
-        jsr draw_text
-        // jsr checkJoystick
-        // End Code ----------
-        lda #5
-        sta vic.cborder
-        addRasterInterrupt irqBottom:#190
-
-        endISR
-        rts
+    // Begin Code ----------
+    // End Code ------------
+    addRasterInterrupt irqBottom:#190
+    endISR
+    rts
 irqBottom:
-       // Begin Code ----------
-        jsr draw_text
-        // jsr checkJoystick
-        // End Code ----------
-        lda #7
-        sta vic.cborder
-        addRasterInterrupt irqTop:#0
+    // Begin Code ----------
+    // End Code ------------
+    addRasterInterrupt irqTop:#0
+    endISRFinal
+    rts
 
-        endISRFinal
-        rts
-
-
-
-
-
+.import source "assets/commando-charset.s"
 .import source "assets/commando-colors.s"
+.import source "assets/commando-map.s"

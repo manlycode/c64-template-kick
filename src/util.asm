@@ -1,5 +1,13 @@
 #importonce
 
+.pseudocommand setPtr src:dest {
+    .print "src=$"+toHexString(>src.getValue())
+    lda #<src.getValue()
+    sta dest.getValue()
+    lda #>src.getValue()
+    sta dest.getValue()+1
+}
+
 .pseudocommand setBits target:bits {
     .if (bits.getType()==AT_IMMEDIATE) {
         lda target
@@ -37,11 +45,16 @@
 }
 
 .macro addWord(Word, amount) {
-        lda Word
+    lda Word
     clc
     clv
     adc #amount
     bcc !+
     inc Word+1
 !:  sta Word
+}
+
+.pseudocommand mov src:dest {
+    lda src
+    sta dest
 }

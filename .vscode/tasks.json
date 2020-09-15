@@ -4,11 +4,26 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "Build Tests",
+      "isBackground": true,
+      "command": [
+        "./bin/kickass-build.sh"
+      ],
+      "args": [
+        "${workspaceFolder}/build/test-suite.prg",
+        "${workspaceFolder}/test-suite.asm"
+      ],
+      "group": {
+        "kind": "test",
+        "isDefault": false
+      },
+      "problemMatcher": []
+    },
+    {
       "label": "Run Test (C64Debugger)",
       "dependsOrder": "sequence",
       "dependsOn": [
-        "Build Tests",
-        "fix-test-labels"
+        "Build Tests"
       ],
       "isBackground": true,
       "command": [
@@ -28,8 +43,7 @@
       "label": "Debug (C64Debugger)",
       "dependsOrder": "sequence",
       "dependsOn": [
-        "Build Main",
-        "fix-labels"
+        "Build Main"
       ],
       "isBackground": true,
       "command": [
