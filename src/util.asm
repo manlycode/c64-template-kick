@@ -1,7 +1,7 @@
 #importonce
 
 .pseudocommand setPtr src:dest {
-    .print "src=$"+toHexString(>src.getValue())
+    .print "src=$"+toHexString(>src.getValue())+toHexString(<src.getValue())
     lda #<src.getValue()
     sta dest.getValue()
     lda #>src.getValue()

@@ -130,3 +130,62 @@ vpYbuffer: .byte $00
         rts
 }
 
+
+.namespace viewPort {
+    .macro @ViewPortDef(mapPtr, x, y, width, height) {
+        .word mapPtr
+        .byte x,y
+        .byte width,height
+    }
+    
+    init:
+        // @param vpDefPtr
+        .label vpDefPtr = zp.tmpPtr1
+
+        ldy #0
+        lda (vpDefPtr),y
+        sta mapPtr
+        iny
+
+        lda (vpDefPtr),y
+        sta mapPtr+1
+        iny
+
+        lda (vpDefPtr),y
+        sta mapPtr+2
+        iny
+
+        lda (vpDefPtr),y
+        sta mapPtr+3
+        iny
+
+        lda (vpDefPtr),y
+        sta mapPtr+4
+        iny
+
+        lda (vpDefPtr),y
+        sta mapPtr+5
+        iny
+        
+        rts
+
+
+    mapPtr: .word $0000
+    .namespace dim {
+        width:  .byte $00        // Width in tiles
+        height: .byte $00       // Height in tiles    
+    }
+    .namespace pos {
+        x: .byte $00
+        y: .byte $00    
+    }
+    
+    
+    
+    
+
+    
+
+    .watch mapPtr,,"mapPtr"
+    .watch mapPtr+1,,"mapPtr"
+}

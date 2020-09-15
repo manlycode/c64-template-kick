@@ -11,7 +11,7 @@
       ],
       "args": [
         "${workspaceFolder}/build/test-suite.prg",
-        "${workspaceFolder}/test-suite.asm"
+        "${file}"
       ],
       "group": {
         "kind": "test",

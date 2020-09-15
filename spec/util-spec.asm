@@ -7,7 +7,7 @@ sfspec: :init_spec()
             mov src:dest
             :assert_equal #$22:dest
 
-    :describe("setPtr")
+    :describe("setPtr"); {
         :describe("when given an absolute address")
             :it("sets the pointer to the address")
                 lda #$00
@@ -17,7 +17,7 @@ sfspec: :init_spec()
                 setPtr $ddff:ptr
                 :assert_equal #$ff:ptr
                 :assert_equal #$dd:ptr+1
-        :describe("when given a label")
+        :describe("when given a label"); {
             :it("sets the pointer to the address")
                 lda #0
                 sta ptr
@@ -26,8 +26,8 @@ sfspec: :init_spec()
                 setPtr src:ptr
                 :assert_equal #<src:ptr
                 :assert_equal #>src:ptr+1
-
-
+        }
+    }
     :finish_spec()
 
 .pc = * "Data"
