@@ -182,7 +182,44 @@ vpYbuffer: .byte $00
 .namespace viewPort {
     shiftRight:
         inc pos.x
-        // Update Bounds
+
+        ldx #24
+!:        
+        clc
+        clv
+        inc left.lsb,x
+        bne !+
+        inc left.msb,x
+!:      clc
+        clv
+        dex
+        bmi !+
+        jmp !--
+ !:     
+        rts
+
+shiftLeft:
+        dec pos.x
+
+        ldx #24
+!:        
+        clc
+        clv
+        dec left.lsb,x
+        
+        clc
+        clv
+        lda left.lsb,x
+        cmp #$ff
+        bne !+
+        dec left.msb,x
+
+!:      clc
+        clv
+        dex
+        bmi !+
+        jmp !--
+ !:     
         rts
 
     mapPtr: .word $0000

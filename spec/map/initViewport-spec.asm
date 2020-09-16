@@ -1,6 +1,6 @@
-.import source "../vendor/64spec/lib/64spec.asm"
-.import source "../src/map.asm"
-.import source "../src/util.asm"
+.import source "../../vendor/64spec/lib/64spec.asm"
+.import source "../../src/map.asm"
+.import source "../../src/util.asm"
 
 sfspec: :init_spec()
     :describe("initViewport")
@@ -86,12 +86,3 @@ setupWYPos:
 setupPastMaximums:
     viewPort_init($0400,80,50,80,50)
     rts
-
-.pc = * "Data"
-// Data labels go here
-// vpDef:
-//     @ViewPortDef($0400,80,25,35,2)
-// vpDefRollover:
-//     @ViewPortDef($04ff,80,25,35,2)
-// vpDefAmostRollover:
-//     @ViewPortDef($04b6,80,25,35,2)

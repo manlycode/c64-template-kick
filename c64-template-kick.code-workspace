@@ -12,7 +12,6 @@
 		"kickassembler.debuggerOptions": "-wait 2500 -autojmp",
 		"kickassembler.debuggerDumpFile": true,
 		"kickassembler.debuggerRuntime": "/Applications/C64Debugger.app/Contents/MacOS/C64Debugger",
-		"kickassembler.emulatorRuntime": "/usr/local/bin/x64sc",
-		"kickassembler.javaAllowFileCreation": true
+		"kickassembler.emulatorRuntime": "/usr/local/bin/x64sc"
 	}
 }
