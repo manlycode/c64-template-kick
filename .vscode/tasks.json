@@ -4,6 +4,16 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "Clean",
+      "type": "shell",
+      "isBackground": true,
+      "command": "make",
+      "args": [
+        "clean"
+      ],
+      "problemMatcher": []
+    },
+    {
       "label": "Build Tests",
       "isBackground": true,
       "command": [
@@ -13,10 +23,7 @@
         "${workspaceFolder}/build/test-suite.prg",
         "${file}"
       ],
-      "group": {
-        "kind": "test",
-        "isDefault": false
-      },
+      "group": "test",
       "problemMatcher": []
     },
     {
@@ -31,7 +38,8 @@
       ],
       "args": [
         "${workspaceFolder}/build/test-suite.prg",
-        "${workspaceFolder}/build/test-suite.sym"
+        "${workspaceFolder}/build/test-suite.sym",
+        "${workspaceFolder}/spec/test-results.d64"
       ],
       "group": {
         "kind": "test",
