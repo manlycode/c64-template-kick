@@ -132,61 +132,57 @@ vpYbuffer: .byte $00
 }
 
 
-.namespace viewPort {
-    .macro @ViewPortDef(mapPtr, x, y, width, height) {
-        .word mapPtr
-        .byte x,y
-        .byte width,height
+.macro viewPort_init(mapPtr, width, height, _x, _y) {
+    .var _maxX = (width - SCREEN_W)
+    .var _maxY = (height - SCREEN_H)
+    .var x = min(_x, _maxX)
+    .var y = min(_y, _maxY)
+
+    setPtr mapPtr:viewPort.mapPtr
+
+    lda #width
+    sta viewPort.dim.width
+
+    lda #height
+    sta viewPort.dim.height
+
+    lda #x
+    sta viewPort.pos.x
+
+    lda #y
+    sta viewPort.pos.y
+
+    lda #_maxX
+    sta viewPort.pos.maxX
+
+    lda #_maxY
+    sta viewPort.pos.maxY
+
+    .var currentPtrLeft = mapPtr+(width*y)+x
+    .var currentPtrRight = mapPtr+(width*y)+x+39
+
+    .for (var i=0; i<25; i++) {
+        lda #>currentPtrLeft
+        sta viewPort.left.msb+i
+        lda #<currentPtrLeft
+        sta viewPort.left.lsb+i
+
+        lda #>currentPtrRight
+        sta viewPort.right.msb+i
+        lda #<currentPtrRight
+        sta viewPort.right.lsb+i
+
+        .eval currentPtrLeft += width
+        .eval currentPtrRight += width
     }
     
-    init:
-        // @param vpDefPtr
-        .label vpDefPtr = zp.tmpPtr1
 
-        ldy #0
-    !:
-        lda (vpDefPtr),y
-        sta mapPtr,y
-        iny
-        cpy #6
-        bne !-
+}
 
-        lda #$00
-        ldx #00
-    !:
-        sta bounds.top.left,x
-        inx
-        cpx #4
-        bne !-
-        rts
-
+.namespace viewPort {
     shiftRight:
         inc pos.x
         // Update Bounds
-        rts
-
-    updateBounds:
-        clc
-        clv
-
-        lda mapPtr+1
-        sta bounds.top.left+1
-        sta bounds.top.right+1
-
-        lda mapPtr
-        adc pos.x
-        bcc !+
-        inc bounds.top.left+1   // Rollover was here
-        inc bounds.top.right+1
-!:      sta bounds.top.left
-
-        clc
-        clv
-        adc #39
-        bcc !+
-        inc bounds.top.right+1
-!:      sta bounds.top.right
-
         rts
 
     mapPtr: .word $0000
@@ -196,16 +192,18 @@ vpYbuffer: .byte $00
     }
     .namespace pos {
         x: .byte $00
-        y: .byte $00    
+        y: .byte $00
+        maxX: .byte $00    
+        maxY: .byte $00
     }
-    .namespace bounds {
-        .namespace top {
-            left: .word $0000
-            right: .word $0000
-        }
-        .namespace bottom {
-            left: .word $0000
-            right: .word $0000
-        }
+
+    .namespace left {
+        msb: .fill 25,0
+        lsb: .fill 25,0
+    }
+
+    .namespace right {
+        msb: .fill 25,0
+        lsb: .fill 25,0
     }
 }
