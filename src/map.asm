@@ -184,17 +184,24 @@ vpYbuffer: .byte $00
         inc pos.x
 
         ldx #24
-!:        
+    loopShiftRight:
         clc
         clv
         inc left.lsb,x
         bne !+
         inc left.msb,x
+!:
+        clc
+        clv
+        inc right.lsb,x
+        bne !+
+        inc right.msb,x    
+
 !:      clc
         clv
         dex
         bmi !+
-        jmp !--
+        jmp loopShiftRight
  !:     
         rts
 

@@ -37,17 +37,6 @@ sfspec: :init_spec()
             :assert_equal viewPort.right.lsb+1:#$9b
             :assert_equal viewPort.right.msb+24:#$0b
             :assert_equal viewPort.right.lsb+24:#$cb
-
-            // jsr setupOverflow
-            // jsr viewPort.shiftRight
-            // .watch viewPort.left.msb
-            // .watch viewPort.left.lsb
-            // :assert_equal viewPort.left.msb:#$05
-            // :assert_equal viewPort.left.lsb:#$00
-            // :assert_equal viewPort.left.msb+1:#$05
-            // :assert_equal viewPort.left.lsb+1:#$50
-            // :assert_equal viewPort.left.msb+24:#$0c
-            // :assert_equal viewPort.left.lsb+24:#$80
     
     :finish_spec()
 
