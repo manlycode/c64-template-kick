@@ -6,17 +6,11 @@ bootstrap: vendor/KickAssembler/KickAss.jar vendor/64spec
 
 .PHONY: clean
 clean:
-	-rm -rf .asminfo.txt
-	-rm -rf *.sym
-	-rm -rf .source.txt
-	-rm -rf *.prg
-	-rm -rf *.vs
-	-rm -rf **/.asminfo.txt
-	-rm -rf **/*.sym
-	-rm -rf **/.source.txt
-	-rm -rf **/*.prg
-	-rm -rf **/*.vs
-
+	-find . -type f -name '.asminfo.txt' -exec rm {} +
+	-find . -type f -name '.source.txt' -exec rm {} +
+	-find . -type f -name '*.sym' -exec rm {} +
+	-find . -type f -name '*.prg' -exec rm {} +
+	-find . -type f -name '*.vs' -exec rm {} +
 
 .PHONY: clean-deps
 clean-deps:

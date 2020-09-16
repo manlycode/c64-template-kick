@@ -1,6 +1,6 @@
-.import source "../../vendor/64spec/lib/64spec.asm"
-.import source "../../src/map.asm"
-.import source "../../src/util.asm"
+.import source "../../../vendor/64spec/lib/64spec.asm"
+.import source "../../../src/map.asm"
+.import source "../../../src/util.asm"
 
 sfspec: :init_spec()
     :describe("shiftLeft")

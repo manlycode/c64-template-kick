@@ -24,6 +24,10 @@
         "${file}"
       ],
       "group": "test",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "Clean"
+      ],
       "problemMatcher": []
     },
     {
