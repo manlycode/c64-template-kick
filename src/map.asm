@@ -132,13 +132,14 @@ vpYbuffer: .byte $00
 }
 
 
-.macro viewPort_init(mapPtr, width, height, _x, _y) {
+.macro viewPort_init(mapPtr, screenPtr, width, height, _x, _y) {
     .var _maxX = (width - SCREEN_W)
     .var _maxY = (height - SCREEN_H)
     .var x = min(_x, _maxX)
     .var y = min(_y, _maxY)
 
     setPtr mapPtr:viewPort.mapPtr
+    setPtr screenPtr:viewPort.screenPtr
 
     lda #width
     sta viewPort.dim.width
@@ -160,6 +161,9 @@ vpYbuffer: .byte $00
 
     .var currentPtrLeft = mapPtr+(width*y)+x
     .var currentPtrRight = mapPtr+(width*y)+x+39
+    .var currentScrnPtrLeft = screenPtr+0
+    .var currentScrnPtrRight = screenPtr+39
+    .print "currentScrnPtrRight="+toHexString(currentScrnPtrRight)
 
     .for (var i=0; i<25; i++) {
         lda #>currentPtrLeft
@@ -167,13 +171,25 @@ vpYbuffer: .byte $00
         lda #<currentPtrLeft
         sta viewPort.left.lsb+i
 
+        lda #>currentScrnPtrLeft
+        sta viewPort.screenLeft.msb+i
+        lda #<currentScrnPtrLeft
+        sta viewPort.screenLeft.lsb+i
+
         lda #>currentPtrRight
         sta viewPort.right.msb+i
         lda #<currentPtrRight
         sta viewPort.right.lsb+i
 
+        lda #>currentScrnPtrRight
+        sta viewPort.screenRight.msb+i
+        lda #<currentScrnPtrRight
+        sta viewPort.screenRight.lsb+i
+
         .eval currentPtrLeft += width
         .eval currentPtrRight += width
+        .eval currentScrnPtrLeft = currentScrnPtrLeft + 40
+        .eval currentScrnPtrRight = currentScrnPtrRight + 40
     }
     
 
@@ -251,7 +267,31 @@ vpYbuffer: .byte $00
     endShiftLeft:    
         rts
 
+    renderColLeft:
+        .label dest = zp.tmpPtr1
+        .label source = zp.tmpPtr2
+
+        ldy #0
+    renderColLeftLoop:
+        lda left.lsb,y
+        sta source
+        lda left.msb,y
+        sta source+1
+
+        lda (source),y
+        sta (dest),y
+
+        clc
+        clv
+        iny
+        cpy #25
+        bne renderColLeftLoop
+        
+        rts
+    .pc = * "Data"
     mapPtr: .word $0000
+    screenPtr: .word $0000
+
     .namespace dim {
         width:  .byte $00        // Width in tiles
         height: .byte $00       // Height in tiles    
@@ -269,6 +309,16 @@ vpYbuffer: .byte $00
     }
 
     .namespace right {
+        msb: .fill 25,0
+        lsb: .fill 25,0
+    }
+
+    .namespace screenLeft {
+        msb: .fill 25,0
+        lsb: .fill 25,0
+    }
+
+    .namespace screenRight {
         msb: .fill 25,0
         lsb: .fill 25,0
     }

@@ -8,6 +8,14 @@
     sta dest.getValue()+1
 }
 
+.pseudocommand copyPtr src:dest {
+    .print "src=$"+toHexString(>src.getValue())+toHexString(<src.getValue())
+    lda src.getValue()
+    sta dest.getValue()
+    lda src.getValue()+1
+    sta dest.getValue()+1
+}
+
 .pseudocommand setBits target:bits {
     .if (bits.getType()==AT_IMMEDIATE) {
         lda target
