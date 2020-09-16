@@ -200,16 +200,17 @@ vpYbuffer: .byte $00
 !:      clc
         clv
         dex
-        bmi !+
+        bmi endShiftRight
+
         jmp loopShiftRight
- !:     
+    endShiftRight:
         rts
 
-shiftLeft:
+    shiftLeft:
         dec pos.x
 
         ldx #24
-shiftLeftLoop:        
+    shiftLeftLoop:        
         clc
         clv
         dec left.lsb,x
@@ -221,7 +222,7 @@ shiftLeftLoop:
         bne !+
         dec left.msb,x
 
-!:      clc
+    !:  clc
         clv
         dec right.lsb,x
         
@@ -232,12 +233,12 @@ shiftLeftLoop:
         bne !+
         dec right.msb,x
 
-!:      clc
+    !:  clc
         clv
         dex
-        bmi !+
+        bmi endLeftLoop
         jmp shiftLeftLoop
- !:     
+    endLeftLoop:    
         rts
 
     mapPtr: .word $0000
