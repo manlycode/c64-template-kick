@@ -53,6 +53,6 @@ setup:
     viewPort_init($0400,screen,80,25,$23,$0)
     rts
 
-.pc = $8000
+.pc = $8000 "Data"
 screen:
     .byte $0
