@@ -209,7 +209,7 @@ shiftLeft:
         dec pos.x
 
         ldx #24
-!:        
+shiftLeftLoop:        
         clc
         clv
         dec left.lsb,x
@@ -223,9 +223,20 @@ shiftLeft:
 
 !:      clc
         clv
+        dec right.lsb,x
+        
+        clc
+        clv
+        lda right.lsb,x
+        cmp #$ff
+        bne !+
+        dec right.msb,x
+
+!:      clc
+        clv
         dex
         bmi !+
-        jmp !--
+        jmp shiftLeftLoop
  !:     
         rts
 

@@ -27,6 +27,27 @@ sfspec: :init_spec()
             :assert_equal viewPort.left.lsb+1:#$4f
             :assert_equal viewPort.left.msb+24:#$0b
             :assert_equal viewPort.left.lsb+24:#$7f
+
+        :it("updates the right col")
+            jsr setup
+            jsr viewPort.shiftLeft
+            .watch viewPort.right.msb+1
+            .watch viewPort.right.lsb+1
+            :assert_equal viewPort.right.msb:#$04
+            :assert_equal viewPort.right.lsb:#$27
+            :assert_equal viewPort.right.msb+1:#$04
+            :assert_equal viewPort.right.lsb+1:#$77
+            :assert_equal viewPort.right.msb+24:#$0B
+            :assert_equal viewPort.right.lsb+24:#$A7
+
+            jsr setupOverflow
+            jsr viewPort.shiftLeft
+            :assert_equal viewPort.right.msb:#$04
+            :assert_equal viewPort.right.lsb:#$26
+            :assert_equal viewPort.right.msb+1:#$04
+            :assert_equal viewPort.right.lsb+1:#$76
+            :assert_equal viewPort.right.msb+24:#$0b
+            :assert_equal viewPort.right.lsb+24:#$a6
     
     :finish_spec()
 
