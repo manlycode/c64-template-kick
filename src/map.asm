@@ -163,7 +163,7 @@ vpYbuffer: .byte $00
     .var currentPtrRight = mapPtr+(width*y)+x+39
     .var currentScrnPtrLeft = screenPtr+0
     .var currentScrnPtrRight = screenPtr+39
-    .print "currentScrnPtrRight="+toHexString(currentScrnPtrRight)
+.print "currentScrnPtrRight="+toHexString(currentScrnPtrRight)
 
     .for (var i=0; i<25; i++) {
         lda #>currentPtrLeft
@@ -186,10 +186,10 @@ vpYbuffer: .byte $00
         lda #<currentScrnPtrRight
         sta viewPort.screenRight.lsb+i
 
-        .eval currentPtrLeft += width
-        .eval currentPtrRight += width
-        .eval currentScrnPtrLeft = currentScrnPtrLeft + 40
-        .eval currentScrnPtrRight = currentScrnPtrRight + 40
+        .eval currentPtrLeft = currentPtrLeft + width - 1
+        .eval currentPtrRight += currentPtrRight + width - 1
+        .eval currentScrnPtrLeft = currentScrnPtrLeft + 39
+        .eval currentScrnPtrRight = currentScrnPtrRight + 39
     }
     
 
@@ -278,8 +278,14 @@ vpYbuffer: .byte $00
         lda left.msb,y
         sta source+1
 
+        lda screenLeft.lsb,y
+        sta dest
+        lda screenLeft.msb,y
+        sta dest+1
+
         lda (source),y
         sta (dest),y
+
 
         clc
         clv
@@ -288,6 +294,7 @@ vpYbuffer: .byte $00
         bne renderColLeftLoop
         
         rts
+
     .pc = * "Data"
     mapPtr: .word $0000
     screenPtr: .word $0000

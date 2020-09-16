@@ -33,7 +33,7 @@ start:
     // vic_CopyChars(charset.data,$3000,2048)
     // vic_CopyColors(colors)
 
-    
+        
 
     EnableTimers()
 
