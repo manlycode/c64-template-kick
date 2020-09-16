@@ -181,6 +181,11 @@ vpYbuffer: .byte $00
 
 .namespace viewPort {
     shiftRight:
+        clc
+        clv
+        lda pos.x
+        cmp pos.maxX
+        beq endShiftRight
         inc pos.x
 
         ldx #24
@@ -207,6 +212,11 @@ vpYbuffer: .byte $00
         rts
 
     shiftLeft:
+        clc
+        clv
+        lda pos.x
+        cmp #0
+        beq endShiftLeft
         dec pos.x
 
         ldx #24
@@ -236,9 +246,9 @@ vpYbuffer: .byte $00
     !:  clc
         clv
         dex
-        bmi endLeftLoop
+        bmi endShiftLeft
         jmp shiftLeftLoop
-    endLeftLoop:    
+    endShiftLeft:    
         rts
 
     mapPtr: .word $0000
