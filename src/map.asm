@@ -187,7 +187,7 @@ vpYbuffer: .byte $00
         sta viewPort.screenRight.lsb+i
 
         .eval currentPtrLeft = currentPtrLeft + width - 1
-        .eval currentPtrRight += currentPtrRight + width - 1
+        .eval currentPtrRight = currentPtrRight + width - 1
         .eval currentScrnPtrLeft = currentScrnPtrLeft + 39
         .eval currentScrnPtrRight = currentScrnPtrRight + 39
     }
@@ -292,6 +292,34 @@ vpYbuffer: .byte $00
         iny
         cpy #25
         bne renderColLeftLoop
+        
+        rts
+        
+    renderColRight:
+        .label rightDest = zp.tmpPtr1
+        .label rightSource = zp.tmpPtr2
+
+        ldy #0
+    renderColRightLoop:
+        lda right.lsb,y
+        sta rightSource
+        lda right.msb,y
+        sta rightSource+1
+
+        lda screenRight.lsb,y
+        sta rightDest
+        lda screenRight.msb,y
+        sta rightDest+1
+
+        lda (rightSource),y
+        sta (rightDest),y
+
+
+        clc
+        clv
+        iny
+        cpy #25
+        bne renderColRightLoop
         
         rts
 

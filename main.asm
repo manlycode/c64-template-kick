@@ -29,11 +29,12 @@ start:
     lda #15
     sta vic.cbg2
 
-    // copyMap(commando_map,MAP_WIDTH,MAP_HEIGHT,1,1,charset,2048,$0400)
-    // vic_CopyChars(charset.data,$3000,2048)
-    // vic_CopyColors(colors)
+    copyMap(commando_map,MAP_WIDTH,MAP_HEIGHT,1,1,charset,2048,$0400)
+    vic_CopyChars(charset.data,$3000,2048)
+    vic_CopyColors(colors)
+    vic_set38ColumnMode()
 
-        
+    jsr initMap
 
     EnableTimers()
 
@@ -47,8 +48,13 @@ irqTop:
     vic_StandardCharacterModeOn()
     vic_MultiColorModeOn()
     jsr joystick.check
+    
     // End Code -----------
     endISRFinal
+    rts
+
+initMap:
+    @viewPort_init(commando_map,$0400,80,25,0,0)
     rts
 
 .import source "assets/commando-charset.s"

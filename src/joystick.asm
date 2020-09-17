@@ -48,7 +48,9 @@
             ldx #2
             stx vic.cborder
 
+            jsr viewPort.shiftRight
             jsr map.copyRight
+            jsr viewPort.renderColRight
 
             rts
 
