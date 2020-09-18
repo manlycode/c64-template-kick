@@ -14,6 +14,23 @@
       "problemMatcher": []
     },
     {
+      "label": "Build Main",
+      "isBackground": true,
+      "command": [
+        "./bin/kickass-build.sh"
+      ],
+      "args": [
+        "${workspaceFolder}/build/test-suite.prg",
+        "${workspaceFolder}/main.asm"
+      ],
+      "group": "test",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "Clean"
+      ],
+      "problemMatcher": []
+    },
+    {
       "label": "Build Tests",
       "isBackground": true,
       "command": [
@@ -42,7 +59,7 @@
       ],
       "args": [
         "${workspaceFolder}/build/test-suite.prg",
-        "${workspaceFolder}/build/test-suite.sym",
+        "${workspaceFolder}/build/test-suite.vs",
         "${workspaceFolder}/spec/test-results.d64"
       ],
       "group": {
@@ -63,7 +80,7 @@
       ],
       "args": [
         "${workspaceFolder}/build/main.prg",
-        "${workspaceFolder}/build/main.sym"
+        "${workspaceFolder}/build/main.vs"
       ],
       "problemMatcher": [],
       "group": {

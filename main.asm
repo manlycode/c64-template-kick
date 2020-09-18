@@ -29,12 +29,15 @@ start:
     lda #15
     sta vic.cbg2
 
-    copyMap(commando_map,MAP_WIDTH,MAP_HEIGHT,1,1,charset,2048,$0400)
+    // copyMap(commando_map,MAP_WIDTH,MAP_HEIGHT,1,1,charset,2048,$0400)
     vic_CopyChars(charset.data,$3000,2048)
     vic_CopyColors(colors)
-    vic_set38ColumnMode()
+    // vic_set38ColumnMode()
 
     jsr initMap
+    jsr viewPort.renderColLeft
+    jsr viewPort.copyColLeft
+
 
     EnableTimers()
 
