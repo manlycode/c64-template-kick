@@ -2,6 +2,8 @@
 .import source "util.asm"
 .import source "zero-page.asm"
 .import source "vic.asm"
+.import source "ptrTable.asm"
+
 
 //------------------------------------------------------------------
 // Constants
@@ -110,26 +112,26 @@ vpYbuffer: .byte $00
 //------------------------------------------------------------------
 // Subroutines
 //------------------------------------------------------------------
-.namespace map {
-    copyRight:
-        lda #0
-        sta zp.tmp1
+// .namespace map {
+//     copyRight:
+//         lda #0
+//         sta zp.tmp1
 
-        .for (var row = 0; row <= 25; row++) {
+//         .for (var row = 0; row <= 25; row++) {
         
-            .for (var i=39; i >= 0; i--) {
-                lda zp.tmp1
-                sta zp.tmp2
+//             .for (var i=39; i >= 0; i--) {
+//                 lda zp.tmp1
+//                 sta zp.tmp2
 
-                lda $0400+(40*row)+i
-                sta zp.tmp1
-                lda zp.tmp2
-                sta $0400+(40*row)+i
-            }
-        }
+//                 lda $0400+(40*row)+i
+//                 sta zp.tmp1
+//                 lda zp.tmp2
+//                 sta $0400+(40*row)+i
+//             }
+//         }
 
-        rts
-}
+//         rts
+// }
 
 
 .macro viewPort_init(mapPtr, screenPtr, width, height, _x, _y) {
@@ -168,25 +170,22 @@ vpYbuffer: .byte $00
     .for (var i=0; i<25; i++) {
         lda #>currentPtrLeft
         sta viewPort.left.msb+i
+        sta viewPort.srcTable.msb+i
         lda #<currentPtrLeft
         sta viewPort.left.lsb+i
+        sta viewPort.srcTable.lsb+i
         
         lda #>currentPtrLeft
         sta zp.tmpPtr1
         lda #<currentPtrLeft
         sta zp.tmpPtr1+1
         
-        decPtr(zp.tmpPtr1)
-        lda zp.tmpPtr1
-        sta viewPort.tmpTable.lsb+i
-        lda zp.tmpPtr1+1
-        sta viewPort.tmpTable.lsb+i+1
-        
-
         lda #>currentScrnPtrLeft
         sta viewPort.screenLeft.msb+i
+        sta viewPort.destTable.msb+i
         lda #<currentScrnPtrLeft
         sta viewPort.screenLeft.lsb+i
+        sta viewPort.destTable.lsb+i
 
         lda #>currentPtrRight
         sta viewPort.right.msb+i
@@ -204,11 +203,11 @@ vpYbuffer: .byte $00
         .eval currentScrnPtrLeft = currentScrnPtrLeft + 39
         .eval currentScrnPtrRight = currentScrnPtrRight + 39
     }
-    
-
 }
 
 .namespace viewPort {
+    .label dest = zp.tmpPtr1
+    .label source = zp.tmpPtr2
     shiftRight:
         clc
         clv
@@ -281,8 +280,7 @@ vpYbuffer: .byte $00
         rts
 
     renderColLeft:
-        .label dest = zp.tmpPtr1
-        .label source = zp.tmpPtr2
+        
 
         ldy #0
     renderColLeftLoop:
@@ -336,6 +334,66 @@ vpYbuffer: .byte $00
         
         rts
 
+    renderMap:
+        lda #40
+        sta idx
+
+    !:
+        jsr renderCurrentCol
+
+        ldy #25
+        setPtr srcTable.lsb:zp.tmpPtr1
+        setPtr srcTable.msb:zp.tmpPtr2
+        jsr ptrTable.increment
+
+        ldy #25
+        setPtr destTable.lsb:zp.tmpPtr1
+        setPtr destTable.msb:zp.tmpPtr2
+        jsr ptrTable.increment
+
+        clc
+        clv
+        dec idx
+        bne !-
+        rts
+
+    renderCurrentCol:
+        ldy #0
+    renderCurrentColLoop:
+        lda srcTable.lsb,y
+        sta source
+        lda srcTable.msb,y
+        sta source+1
+
+        lda destTable.lsb,y
+        sta dest
+        lda destTable.msb,y
+        sta dest+1
+
+        lda (source),y
+        sta (dest),y
+
+        clc
+        clv
+        iny
+        cpy #25
+        bne renderCurrentColLoop
+        
+        rts
+
+    copyRight:
+        // src = right col - 1
+        // dest = right col - 2
+        lda #25
+        sta ptrTable.size
+        copyPtr screenRight.lsb:ptrTable.srcLow
+        copyPtr screenRight.msb:ptrTable.srcHigh
+        copyPtr screenRight.lsb:ptrTable.destLow
+        copyPtr screenRight.msb:ptrTable.destHigh
+
+
+        rts
+
     .pc = * "Data"
     mapPtr: .word $0000
     screenPtr: .word $0000
@@ -371,8 +429,15 @@ vpYbuffer: .byte $00
         lsb: .fill 25,0
     }
 
-    .namespace tmpTable {
+    .namespace srcTable {
         msb: .fill 25,0
         lsb: .fill 25,0
     }
+    
+    .namespace destTable {
+        msb: .fill 25,0
+        lsb: .fill 25,0
+    }
+
+    idx: .byte $00
 }

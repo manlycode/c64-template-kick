@@ -30,12 +30,16 @@ start:
     sta vic.cbg2
 
     // copyMap(commando_map,MAP_WIDTH,MAP_HEIGHT,1,1,charset,2048,$0400)
+    jsr viewPort.renderMap
     vic_CopyChars(charset.data,$3000,2048)
     vic_CopyColors(colors)
     // vic_set38ColumnMode()
 
     jsr initMap
+    
+    jsr viewPort.renderMap
     jsr viewPort.renderColLeft
+    
 
     EnableTimers()
 

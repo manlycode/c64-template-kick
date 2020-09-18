@@ -1,6 +1,8 @@
 .import source "../../vendor/64spec/lib/64spec.asm"
 .import source "../../src/util.asm"
 .import source "../../src/zero-page.asm"
+.import source "../../src/ptrTable.asm"
+
 
 
 sfspec: :init_spec()
@@ -10,7 +12,7 @@ sfspec: :init_spec()
             setPtr lsbTable:zp.tmpPtr1
             setPtr msbTable:zp.tmpPtr2
             
-            jsr decPtrTable
+            jsr ptrTable.decrement
 
             :assert_equal msbTable:#$03
             :assert_equal lsbTable:#$ff

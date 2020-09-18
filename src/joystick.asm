@@ -40,7 +40,7 @@
             ldx #1
             stx vic.cborder
 
-            // jsr map.copyRight
+        //     jsr map.copyRight
 
             rts
 
