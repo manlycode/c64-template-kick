@@ -1,3 +1,5 @@
+.importonce
+
 .namespace zp {
     .label tmp1 = $02
     .label tmp2 = $fb

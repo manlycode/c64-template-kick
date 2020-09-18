@@ -170,6 +170,18 @@ vpYbuffer: .byte $00
         sta viewPort.left.msb+i
         lda #<currentPtrLeft
         sta viewPort.left.lsb+i
+        
+        lda #>currentPtrLeft
+        sta zp.tmpPtr1
+        lda #<currentPtrLeft
+        sta zp.tmpPtr1+1
+        
+        decPtr(zp.tmpPtr1)
+        lda zp.tmpPtr1
+        sta viewPort.tmpTable.lsb+i
+        lda zp.tmpPtr1+1
+        sta viewPort.tmpTable.lsb+i+1
+        
 
         lda #>currentScrnPtrLeft
         sta viewPort.screenLeft.msb+i
@@ -185,6 +197,7 @@ vpYbuffer: .byte $00
         sta viewPort.screenRight.msb+i
         lda #<currentScrnPtrRight
         sta viewPort.screenRight.lsb+i
+.print "currentScrnPtrRight="+toHexString(currentScrnPtrRight)
 
         .eval currentPtrLeft = currentPtrLeft + width - 1
         .eval currentPtrRight = currentPtrRight + width - 1
@@ -354,6 +367,11 @@ vpYbuffer: .byte $00
     }
 
     .namespace screenRight {
+        msb: .fill 25,0
+        lsb: .fill 25,0
+    }
+
+    .namespace tmpTable {
         msb: .fill 25,0
         lsb: .fill 25,0
     }

@@ -1,7 +1,8 @@
 #importonce
+.import source "zero-page.asm"
 
 .pseudocommand setPtr src:dest {
-    .print "src=$"+toHexString(>src.getValue())+toHexString(<src.getValue())
+.print "src=$"+toHexString(>src.getValue())+toHexString(<src.getValue())
     lda #<src.getValue()
     sta dest.getValue()
     lda #>src.getValue()
@@ -66,3 +67,64 @@
     lda src
     sta dest
 }
+
+
+decPtrTable:
+    // zp.tmpPtr1 - llsb
+    // zp.tmpPtr2 - msb
+    // y - size
+    clc
+    clv
+    dey
+    bmi !++
+
+    clc
+    clv
+    lda (zp.tmpPtr1),y
+    sta zp.tmp1
+    dec zp.tmp1
+    lda zp.tmp1
+    sta (zp.tmpPtr1),y
+    clc
+    clv
+    cmp #$ff
+    bne !+
+    lda (zp.tmpPtr2),y
+    sta zp.tmp1
+    dec zp.tmp1
+    lda zp.tmp1
+    sta (zp.tmpPtr2),y    
+
+!:  jmp decPtrTable
+!:
+    rts
+
+incPtrTable:
+    // zp.tmpPtr1 - llsb
+    // zp.tmpPtr2 - msb
+    // y - size
+    clc
+    clv
+    dey
+    bmi !++
+
+    clc
+    clv
+    lda (zp.tmpPtr1),y
+    sta zp.tmp1
+    inc zp.tmp1
+    lda zp.tmp1
+    sta (zp.tmpPtr1),y
+    clc
+    clv
+    cmp #$00
+    bne !+
+    lda (zp.tmpPtr2),y
+    sta zp.tmp1
+    inc zp.tmp1
+    lda zp.tmp1
+    sta (zp.tmpPtr2),y    
+
+!:  jmp incPtrTable
+!:
+    rts

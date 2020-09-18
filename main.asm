@@ -36,8 +36,6 @@ start:
 
     jsr initMap
     jsr viewPort.renderColLeft
-    jsr viewPort.copyColLeft
-
 
     EnableTimers()
 
