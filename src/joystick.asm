@@ -10,26 +10,26 @@
             jmp saveJoyState
 
     check:
-            clc
-            clv
-            lda cia1.PRB
-            sta joy_currentState
-            cmp joy_prevState
-            beq saveJoyState        // The state didn't change no need for other checks
-            
-            cmp #$f5                // Right
-            bne !+
-            jsr doRight
-            jmp saveJoyState
+        clc
+        clv
+        lda cia1.PRB
+        sta joy_currentState
+        cmp joy_prevState
+        beq saveJoyState        // The state didn't change no need for other checks
+        
+        cmp #$f5                // Right
+        bne !+
+        jsr doRight
+        jmp saveJoyState
 
-    !:      cmp #$fb                // Left
-            bne !+
-            jsr doLeft
-            jmp saveJoyState
+    !:  cmp #$fb                // Left
+        bne !+
+        jsr doLeft
+        jmp saveJoyState
 
-    !:      cmp #$ff                //released
-            ldx #3
-            stx vic.cborder
+    !:  cmp #$ff                //released
+        ldx #3
+        stx vic.cborder
 
     saveJoyState:
             lda joy_currentState
@@ -37,17 +37,18 @@
             rts
 
     doRight:
-            ldx #1
-            stx vic.cborder
+        ldx #1
+        stx vic.cborder
 
-        //     jsr map.copyRight
+        
 
-            rts
+        rts
 
     doLeft:
-            ldx #2
-
-            rts
+        ldx #2
+        stx vic.cborder
+        jsr viewPort.copyRight
+        rts
 
     joy_currentState:
             .byte $00

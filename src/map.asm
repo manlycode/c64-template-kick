@@ -196,7 +196,6 @@ vpYbuffer: .byte $00
         sta viewPort.screenRight.msb+i
         lda #<currentScrnPtrRight
         sta viewPort.screenRight.lsb+i
-.print "currentScrnPtrRight="+toHexString(currentScrnPtrRight)
 
         .eval currentPtrLeft = currentPtrLeft + width - 1
         .eval currentPtrRight = currentPtrRight + width - 1
@@ -384,19 +383,63 @@ vpYbuffer: .byte $00
     copyRight:
         // src = right col - 1
         // dest = right col - 2
-        lda #25
+
+        ldy #25
         sta ptrTable.size
-        copyPtr screenRight.lsb:ptrTable.srcLow
-        copyPtr screenRight.msb:ptrTable.srcHigh
-        copyPtr screenRight.lsb:ptrTable.destLow
-        copyPtr screenRight.msb:ptrTable.destHigh
+        setPtr screenRight.lsb:ptrTable.srcLow
+        setPtr screenRight.msb:ptrTable.srcHigh
+        
+        setPtr srcTable.lsb:ptrTable.destLow
+        setPtr srcTable.msb:ptrTable.destHigh
+        jsr ptrTable.copy
+        
+        setPtr destTable.lsb:ptrTable.destLow
+        setPtr destTable.msb:ptrTable.destHigh
+        jsr ptrTable.copy
+        
+        ldy #25
+        setPtr srcTable.lsb:zp.tmpPtr1
+        setPtr srcTable.msb:zp.tmpPtr2
+        jsr ptrTable.decrement
 
+        lda #40
+        sta copyIdx
 
+    !:  clc
+        clv
+        .watch copyIdx
+        .break
+        
+        dec copyIdx
+        bne !+
+        .break
+        rts
+
+    !:  
+        .break
+        ldy #25
+        sta ptrTable.size
+        jsr ptrTable.copy
+
+        ldy #25
+        setPtr srcTable.lsb:zp.tmpPtr1
+        setPtr srcTable.msb:zp.tmpPtr2
+        jsr ptrTable.decrement
+
+        ldy #25
+        setPtr destTable.lsb:zp.tmpPtr1
+        setPtr destTable.msb:zp.tmpPtr2
+        jsr ptrTable.decrement
+        jmp !--
+
+    !:
         rts
 
     .pc = * "Data"
     mapPtr: .word $0000
     screenPtr: .word $0000
+    copyIdx: .byte $00
+    idx: .byte $00
 
     .namespace dim {
         width:  .byte $00        // Width in tiles
@@ -439,5 +482,6 @@ vpYbuffer: .byte $00
         lsb: .fill 25,0
     }
 
-    idx: .byte $00
+
+    
 }

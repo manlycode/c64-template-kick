@@ -53,8 +53,6 @@
         rts
 
     
-
-
     increment:
         // zp.tmpPtr1 - llsb
         // zp.tmpPtr2 - msb
