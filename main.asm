@@ -16,10 +16,13 @@ start:
     sei
     DisableTimers()
 
+    jsr zp.clear
+    .break
     jsr joystick.init
     vic_SelectBank(0)
     vic_SelectScreenMemory(1)   // $0400
     vic_SelectCharMemory(14)    // $3000
+    
 
     // Set colors for map
     lda #9
