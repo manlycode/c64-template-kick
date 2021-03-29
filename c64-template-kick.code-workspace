@@ -6,12 +6,16 @@
 	],
 	"settings": {
 		"kickassembler.javaRuntime": "/usr/local/opt/openjdk/bin/java",
-		"kickassembler.assemblerJar": "/usr/local/opt/KickAssembler/KickAss.jar",
+		"kickassembler.assembler.jar": "/usr/local/opt/KickAssembler/KickAss.jar",
 		"kickassembler.completionParameterPlaceholders": true,
 		"kickassembler.outputDirectory": "build",
-		"kickassembler.debuggerOptions": "-wait 2500 -autojmp",
+		"kickassembler.debuggerOptions": "-pass -wait 2500 -autojmp",
 		"kickassembler.debuggerDumpFile": true,
-		"kickassembler.debuggerRuntime": "/Applications/C64Debugger.app/Contents/MacOS/C64Debugger",
-		"kickassembler.emulatorRuntime": "/usr/local/bin/x64sc"
+		"kickassembler.debuggerRuntime": "/Applications/C64 Debugger.app/Contents/MacOS/C64 Debugger",
+		"kickassembler.emulatorRuntime": "/usr/local/bin/x64sc",
+		"kickassembler.assemblerLibraryPaths": [
+			"${workspaceFolder}/vendor/64Spec/lib"
+		],
+		"kickassembler.javaAllowFileCreation": true
 	}
 }
