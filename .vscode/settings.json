@@ -1,2 +1,5 @@
 {
+    "kickassembler.assemblerLibraryPaths": [
+        "/Users/manlycode/git/manlycode/c64-template-kick/vendor/64spec/lib"
+    ]
 }
